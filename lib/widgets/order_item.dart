@@ -17,10 +17,8 @@ class OrderItem extends StatelessWidget {
               DateFormat('dd MM yyyy hh:mm').format(order.dateTime),
             ),
             trailing: IconButton(
-              icon:Icon(Icons.expand_more),
-              onPressed: (){
-                
-              },
+              icon: Icon(Icons.expand_more),
+              onPressed: () {},
             ),
           )
         ],
