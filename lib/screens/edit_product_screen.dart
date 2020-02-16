@@ -24,7 +24,6 @@ class _EditProductScreenState extends State<EditProductScreen> {
       setState(() {});
     }
   }
-
   @override
   void dispose() {
     // TODO: implement dispose
