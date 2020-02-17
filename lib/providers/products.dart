@@ -38,7 +38,7 @@ class Products with ChangeNotifier {
     ),
   ];
 
-var _showFavoritesOnly=false;
+  var _showFavoritesOnly = false;
   List<Product> get items {
     // if(_showFavoritesOnly){
     //   return _items.where((prodItem)=> prodItem.isFavorite).toList();
@@ -46,8 +46,8 @@ var _showFavoritesOnly=false;
     return [..._items];
   }
 
-  List<Product> get favoriteItems{
-    return _items.where((prodItem)=>prodItem.isFavorite).toList();
+  List<Product> get favoriteItems {
+    return _items.where((prodItem) => prodItem.isFavorite).toList();
   }
 
   Product findById(String id) {
@@ -64,11 +64,27 @@ var _showFavoritesOnly=false;
   //   notifyListeners();
   // }
 
-  void addProduct() {
+  void addProduct( Product product) {
+    final newProduct=Product(
+      title: product.title,
+      description: product.description,
+      price: product.price,
+      imageUrl: product.imageUrl,
+      id:DateTime.now().toString()
+    );
+
+    _items.add(newProduct);
     // _items.add(value);
     notifyListeners();
-    
   }
 
-  
+  void updateProduct(String id, Product newProduct) {
+    final prodIndex = _items.indexWhere((prod) => prod.id == id);
+    if (prodIndex >= 0) {
+      _items[prodIndex] = newProduct;
+      notifyListeners();
+    } else {
+      print('...');
+    }
+  }
 }
