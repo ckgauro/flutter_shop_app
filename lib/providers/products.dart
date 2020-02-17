@@ -40,7 +40,8 @@ class Products with ChangeNotifier {
     ),
   ];
 
-  var _showFavoritesOnly = false;
+  //var _showFavoritesOnly = false;
+  
   List<Product> get items {
     // if(_showFavoritesOnly){
     //   return _items.where((prodItem)=> prodItem.isFavorite).toList();
@@ -66,9 +67,9 @@ class Products with ChangeNotifier {
   //   notifyListeners();
   // }
 
-  void addProduct(Product product) {
+  Future<void> addProduct(Product product) {
     const url = 'https://shopflutterexample.firebaseio.com/products.json';
-    http
+   return  http
         .post(
       url,
       body: json.encode({
@@ -90,6 +91,7 @@ class Products with ChangeNotifier {
       );
       _items.add(newProduct);
       notifyListeners();
+      //return Future.value();
     });
   }
 
