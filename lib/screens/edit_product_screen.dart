@@ -84,7 +84,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     super.dispose();
   }
 
-  void _saveForm() {
+  Future<void> _saveForm() async {
     print('This is saving');
     final isValid = _form.currentState.validate();
     if (!isValid) {
@@ -94,7 +94,7 @@ class _EditProductScreenState extends State<EditProductScreen> {
     setState(() {
       _isLoading = true;
     });
-   if (_editedProduct.id != null) {
+    if (_editedProduct.id != null) {
       Provider.of<Products>(context, listen: false)
           .updateProduct(_editedProduct.id, _editedProduct);
       setState(() {
@@ -102,35 +102,37 @@ class _EditProductScreenState extends State<EditProductScreen> {
       });
       Navigator.of(context).pop();
     } else {
-      Provider.of<Products>(context, listen: false)
-          .addProduct(_editedProduct)
-          .catchError((error){
-          return  showDialog(
-              context: context,
-              builder: (ctx)=> AlertDialog(
-                title: Text('An error occurred!'),
-                content: Text('Something went wrong.'),
-                actions: <Widget>[
-                  FlatButton(child: Text('okey'), onPressed: (){
-                    Navigator.of(ctx).pop();
-                  },)
-                ],
-
-              )
-            );
-          })
-          .then((_) {
+      try {
+        await Provider.of<Products>(context, listen: false)
+            .addProduct(_editedProduct);
+      } catch (error) {
+        return showDialog(
+            context: context,
+            builder: (ctx) => AlertDialog(
+                  title: Text('An error occurred!'),
+                  content: Text('Something went wrong.'),
+                  actions: <Widget>[
+                    FlatButton(
+                      child: Text('okey'),
+                      onPressed: () {
+                        Navigator.of(ctx).pop();
+                      },
+                    )
+                  ],
+                ));
+      } finally {
         setState(() {
           _isLoading = false;
         });
         Navigator.of(context).pop();
-      });
+        print(_editedProduct.title);
+        print(_editedProduct.description);
+        print(_editedProduct.price);
+        print(_editedProduct.imageUrl);
+      }
     }
-    print(_editedProduct.title);
-    print(_editedProduct.description);
-    print(_editedProduct.price);
-    print(_editedProduct.imageUrl);
-    // Navigator.of(context).pop();
+
+    //Navigator.of(context).pop();
   }
 
   @override
