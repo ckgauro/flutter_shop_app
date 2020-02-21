@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
 
 class Product with ChangeNotifier {
   final String id;
@@ -16,9 +18,35 @@ class Product with ChangeNotifier {
       @required this.imageUrl,
       this.isFavorite = false});
 
-  void toggleFavoriteStatus() {
-    isFavorite = !isFavorite;
+  void _setFavValue(bool newValue) {
+    isFavorite = newValue;
     notifyListeners();
+  }
+
+  Future<void> toggleFavoriteStatus() async {
+    final oldStatus = isFavorite;
+    isFavorite = !isFavorite;
+    print('Toggle is called=>$oldStatus');
+    notifyListeners();
+    final url = 'https://shopflutterexample.firebaseio.com/products/$id.json';
+    try {
+      final response=await http.patch(
+        url,
+        body: json.encode({
+          'isFavorite': isFavorite,
+        }),
+      );
+      if(response.statusCode>=400){
+        _setFavValue(oldStatus);
+      }
+
+      print('Toggle Not found is called=>$oldStatus');
+    } catch (error) {
+      print('Not found ==>');
+      isFavorite = oldStatus;
+      print(oldStatus);
+      notifyListeners();
+    }
   }
 
   @override
